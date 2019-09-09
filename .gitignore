@@ -1,0 +1,4 @@
+/vendor
+/.env
+/public/resources
+/public/assets

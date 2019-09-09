@@ -1,0 +1,20 @@
+{
+    "require": {
+        "silverstripe/recipe-core": "^4.4",
+        "sunnysideup/faster-id-lists": "dev-master"
+    },
+    "extra": {
+        "project-files-installed": [
+            "app/.htaccess",
+            "app/_config.php",
+            "app/_config/mysite.yml"
+        ],
+        "public-files-installed": [
+            ".htaccess",
+            "index.php",
+            "install-frameworkmissing.html",
+            "install.php",
+            "web.config"
+        ]
+    }
+}
