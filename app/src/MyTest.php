@@ -7,14 +7,16 @@ use Sunnysideup\FasterIdLists\FasterIDLists;
 
 class MyTest extends BuildTask
 {
-    public const NUMBER_OF_STEPS = 30;
+    public const NUMBER_OF_STEPS = 10;
 
-    public const MIN = 9399;
+    protected const MIN = 9399;
+
     public const MAX = 9999;
 
     protected $title = 'Test faster lookups';
 
-    public function run($request){
+    public function run($request)
+    {
         $tableRows[0] = [
             0 => 'No. IDs',
             1 => 'STANDARD ID LIST',
@@ -25,12 +27,12 @@ class MyTest extends BuildTask
             $idListAll[$i] = $i;
         }
         $interval = round((self::MAX - self::MIN) / self::NUMBER_OF_STEPS);
-        for($step = $interval + self::MIN; $step <= self::MAX; $step += $interval ) {
-            $rowCount = ($step - self::MIN )/ $interval;
+        for($limit = $interval + self::MIN; $limit <= self::MAX; $limit += $interval ) {
+            $rowCount = ($limit - self::MIN )/ $interval;
             $tableRows[$rowCount] = [];
-            $tableRows[$rowCount][0] = $step;
-            $idListSelected = array_rand($idListAll, $step);
-
+            $tableRows[$rowCount][0] = $limit;
+            $idListSelected = array_rand($idListAll, $limit);
+            shuffle($idListSelected);
             if($rowCount % 2) {
                 $tableRows[$rowCount][1] = $this->testA($idListSelected);
                 $tableRows[$rowCount][2] = $this->testB($idListSelected);
@@ -41,6 +43,12 @@ class MyTest extends BuildTask
                 $tableRows[$rowCount];
             }
         }
+
+        return $this->output($tableRows);
+    }
+
+    protected function output($tableRows)
+    {
         echo '
            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
            <script type="text/javascript">
@@ -70,7 +78,9 @@ class MyTest extends BuildTask
     protected function testA($idListSelected)
     {
         $startA = microtime(true);
-        $myDataList = MyDataObject::get()->filter(['ID' => $idListSelected]);
+        $myDataList = MyDataObject::get()
+            ->filter(['ID' => $idListSelected])
+            ->sort('Title');
         if($myDataList->count() !== count($idListSelected)) {
             user_error('Could not find IDs');
         }
@@ -85,9 +95,11 @@ class MyTest extends BuildTask
         $startB = microtime(true);
         $obj = new FasterIDLists(
             MyDataObject::class,
-            $idListSelected
+            $idListSelected,
+            'ID'
         );
         $myDataList = $obj->filteredDatalist();
+        $myDataList = $myDataList->sort('Title');
         if($myDataList->count() !== count($idListSelected)) {
             user_error('Could not find IDs');
         }

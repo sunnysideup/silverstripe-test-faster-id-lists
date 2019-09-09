@@ -11,6 +11,11 @@ class MyDataObject extends DataObject
     private static $db = [
         'Title' => 'Varchar',
         'OtherField' => 'Varchar',
+        'OtherID' => 'Int',
+    ];
+
+    private static $indexes = [
+        'OtherID' => true
     ];
 
     public function requireDefaultRecords()
@@ -21,6 +26,7 @@ class MyDataObject extends DataObject
                 $obj = new MyDataObject();
                 $obj->Title = $this->randomString(40);
                 $obj->OtherField = $this->randomString(40);
+                $obj->OtherID = MyTest::MAX - $i + 1;
                 DB::alteration_message('creating object '.$i.' '.$obj->Title);
                 $obj->write();
             }
