@@ -7,35 +7,38 @@ use Sunnysideup\FasterIdLists\FasterIDLists;
 
 class MyTest extends BuildTask
 {
-    public const STEP = 25;
+    public const NUMBER_OF_STEPS = 30;
 
+    public const MIN = 9399;
     public const MAX = 9999;
 
     protected $title = 'Test faster lookups';
 
     public function run($request){
-        $tableRows = [0] = [
+        $tableRows[0] = [
             0 => 'No. IDs',
             1 => 'STANDARD ID LIST',
-            2 => 'FAST ID LISTS']
+            2 => 'FAST ID LISTS'
         ];
         $idListAll = [];
-        for($i = 1; $i <= 9999; $i++) {
+        for($i = 1; $i <= self::MAX; $i++) {
             $idListAll[$i] = $i;
         }
-        for($step = 25; $step <= self::MAX; $step += self::STEP ) {
-            $rowCount = $step / self::STEP;
+        $interval = round((self::MAX - self::MIN) / self::NUMBER_OF_STEPS);
+        for($step = $interval + self::MIN; $step <= self::MAX; $step += $interval ) {
+            $rowCount = ($step - self::MIN )/ $interval;
             $tableRows[$rowCount] = [];
-            $tableRows[$rowCount][0] = $rowCount;
-            $idListSelected = array_rand($idList, $step);
+            $tableRows[$rowCount][0] = $step;
+            $idListSelected = array_rand($idListAll, $step);
 
             if($rowCount % 2) {
                 $tableRows[$rowCount][1] = $this->testA($idListSelected);
                 $tableRows[$rowCount][2] = $this->testB($idListSelected);
             } else {
-                $tableRows[$rowCount][2] = $this->testB($idListSelected);
+                $outcomeB = $this->testB($idListSelected);
                 $tableRows[$rowCount][1] = $this->testA($idListSelected);
-                ksort($tableRows[$rowCount]);
+                $tableRows[$rowCount][2] = $outcomeB;
+                $tableRows[$rowCount];
             }
         }
         echo '
@@ -45,9 +48,9 @@ class MyTest extends BuildTask
              google.charts.setOnLoadCallback(drawChart);
 
              function drawChart() {
-               var data = google.visualization.arrayToDataTable([
-                 '.json_encode($tableRows).'
-               ]);
+               var data = google.visualization.arrayToDataTable(
+                 '.json_encode($tableRows, JSON_PRETTY_PRINT).'
+               );
 
                var options = {
                  title: \'Compare ID list lookups\',
@@ -67,29 +70,32 @@ class MyTest extends BuildTask
     protected function testA($idListSelected)
     {
         $startA = microtime(true);
-        $objects = MyDataObject::get()->filter(['ID' => $idListSelected]);
-        foreach($objects as $object) {
-            //do nothing
+        $myDataList = MyDataObject::get()->filter(['ID' => $idListSelected]);
+        if($myDataList->count() !== count($idListSelected)) {
+            user_error('Could not find IDs');
         }
         $endA = microtime(true);
-
-        return  $endA - $startA;
+        // echo '<h1>A</h1>';
+        // echo $myDataList->sql();
+        return round($endA - $startA, 9);
     }
 
     protected function testB($idListSelected)
     {
         $startB = microtime(true);
-        $myDataList = Injector::inst()->create(
-            FasterIDLists::class,
+        $obj = new FasterIDLists(
             MyDataObject::class,
             $idListSelected
-        )->filteredDatalist();
-        foreach($objects as $object) {
-            //do nothing
+        );
+        $myDataList = $obj->filteredDatalist();
+        if($myDataList->count() !== count($idListSelected)) {
+            user_error('Could not find IDs');
         }
         $endB = microtime(true);
+        // echo '<h1>B</h1>';
+        // echo $myDataList->sql();
 
-        return  $endB - $startB;
+        return  round($endB - $startB, 9);
     }
 
 }

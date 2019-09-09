@@ -1,9 +1,12 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
 
 class MyDataObject extends DataObject
 {
+
+    private static $table_name = 'MyDataObject';
 
     private static $db = [
         'Title' => 'Varchar',
