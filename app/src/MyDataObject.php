@@ -14,7 +14,7 @@ class MyDataObject extends DataObject
     {
         parent::requireDefaultRecords();
         if(MyDataObject::get()->count() === 0) {
-            for($i = 0; $i < 99999; $i++) {
+            for($i = 1; $i <= MyTest::MAX; $i++) {
                 $obj = new MyDataObject();
                 $obj->Title = $this->randomString(40);
                 $obj->OtherField = $this->randomString(40);
