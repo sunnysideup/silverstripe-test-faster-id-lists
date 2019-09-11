@@ -19,13 +19,11 @@ abstract class AbstractTestClass extends BuildTask
         user_error('extend in your own class.');
     }
 
-    protected abstract function xAxisTitle() : string;
-
-    protected abstract function yAxisTitle() : string;
-
-    protected abstract function testATitle() : string;
-
-    protected abstract function testBTitle() : string;
+    protected abstract function getGraphTitle() : string;
+    protected abstract function getXAxisTitle() : string;
+    protected abstract function getYAxisTitle() : string;
+    protected abstract function getTestATitle() : string;
+    protected abstract function getTestBTitle() : string;
 
     protected function output($tableRows)
     {
@@ -38,14 +36,14 @@ abstract class AbstractTestClass extends BuildTask
             function drawChart() {
                 var data = google.visualization.arrayToDataTable('.json_encode($tableRows, JSON_PRETTY_PRINT).');
                 var options = {
-                    title: \''.$this->title.'\',
+                    title: \''.$this->getGraphTitle().'\',
                     curveType: \'function\',
                     legend: { position: \'bottom\' },
                     hAxis: {
-                        title: \''.$this->xAxisTitle().'\',
+                        title: \''.$this->getXAxisTitle().'\',
                     },
                     vAxis: {
-                        title: \''.$this->yAxisTitle().'\',
+                        title: \''.$this->getYAxisTitle().'\',
                     }
 
                 };

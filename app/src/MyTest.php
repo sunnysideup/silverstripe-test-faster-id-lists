@@ -11,11 +11,11 @@ class MyTest extends AbstractTestClass
 {
     private static $segment = 'testfasterlookups';
 
-    public const NUMBER_OF_STEPS = 100;
+    public const NUMBER_OF_STEPS = 20;
 
-    protected const MIN = 0;
+    protected const MIN = 1;
 
-    public const MAX = 9999;
+    public const MAX = 3000;
 
     protected $title = 'Comparison of time taken to retrieve dataobjects - comparing simple and "smart" ID select statements';
 
@@ -26,8 +26,8 @@ class MyTest extends AbstractTestClass
     {
         $tableRows[0] = [
             0 => 'limit',
-            1 => $this->testATitle(),
-            2 => $this->testBTitle(),
+            1 => $this->getTestATitle(),
+            2 => $this->getTestBTitle(),
         ];
         $idListAll = [];
         for($i = 1; $i <= self::MAX; $i++) {
@@ -88,21 +88,26 @@ class MyTest extends AbstractTestClass
         return  round($endB - $startB, 9);
     }
 
-    protected function xAxisTitle() : string
+    protected function getGraphTitle() : string
+    {
+        return $this->title.' - using a sequential pool of '.SELF::MAX.' IDs';
+    }
+
+    protected function getXAxisTitle() : string
     {
         return 'percentage of random IDs in select statement';
     }
 
-    protected function yAxisTitle() : string {
+    protected function getYAxisTitle() : string {
         return 'seconds per request';
     }
 
-    protected function testATitle() : string
+    protected function getTestATitle() : string
     {
         return 'Simple select statement';
     }
 
-    protected function testBTitle() : string
+    protected function getTestBTitle() : string
     {
         return 'Computed selected statement';
     }
