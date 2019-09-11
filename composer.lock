@@ -1523,12 +1523,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sunnysideup/silverstripe-faster-id-lists.git",
-                "reference": "d930f32ae77a0a254ae8ef984069d881f9b39f68"
+                "reference": "307a80b14507722d8d554f789f96d1b1fae1104e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sunnysideup/silverstripe-faster-id-lists/zipball/d930f32ae77a0a254ae8ef984069d881f9b39f68",
-                "reference": "d930f32ae77a0a254ae8ef984069d881f9b39f68",
+                "url": "https://api.github.com/repos/sunnysideup/silverstripe-faster-id-lists/zipball/307a80b14507722d8d554f789f96d1b1fae1104e",
+                "reference": "307a80b14507722d8d554f789f96d1b1fae1104e",
                 "shasum": ""
             },
             "require": {
@@ -1563,7 +1563,7 @@
                 "silverstripe",
                 "where"
             ],
-            "time": "2019-09-09T10:52:40+00:00"
+            "time": "2019-09-11T01:35:53+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
