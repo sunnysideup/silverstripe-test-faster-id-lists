@@ -18,4 +18,4 @@ You can use this module as a basis to create your own speed tests.
 7.  browse to: `/dev/tasks/testfasterlookups/`
 8.  edit values in `app/src/MyTest.php` as you see fit.
 9.  see `vendor/sunnysideup/faster-id-lists/src/FasterIDLists.php` for inner workings.
-10. browse to: `/dev/tasks/testfasterlookups/showqueries=1` to see actual queries being executed.
+10. browse to: `/dev/tasks/testfasterlookups/?showqueries=1` to see actual queries being executed.
