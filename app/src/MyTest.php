@@ -15,7 +15,7 @@ class MyTest extends AbstractTestClass
 
     protected const MIN = 1;
 
-    public const MAX = 3000;
+    public const MAX = 9999;
 
     protected $title = 'Comparison of time taken to retrieve dataobjects - comparing simple and "smart" ID select statements';
 
