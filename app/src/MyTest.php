@@ -1,26 +1,33 @@
 <?php
 
+namespace Sunnysideup\ABSpeedTesting;
+
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Core\Injector\Injector;
 use Sunnysideup\FasterIdLists\FasterIDLists;
 
 
-class MyTest extends BuildTask
+class MyTest extends AbstractTestClass
 {
-    public const NUMBER_OF_STEPS = 10;
+    private static $segment = 'testfasterlookups';
 
-    protected const MIN = 9399;
+    public const NUMBER_OF_STEPS = 100;
+
+    protected const MIN = 0;
 
     public const MAX = 9999;
 
-    protected $title = 'Test faster lookups';
+    protected $title = 'Comparison of time taken to retrieve dataobjects - comparing simple and "smart" ID select statements';
+
+    protected $description = 'Compare simple and computed ID lookups';
+
 
     public function run($request)
     {
         $tableRows[0] = [
-            0 => 'No. IDs',
-            1 => 'STANDARD ID LIST',
-            2 => 'FAST ID LISTS'
+            0 => 'limit',
+            1 => $this->testATitle(),
+            2 => $this->testBTitle(),
         ];
         $idListAll = [];
         for($i = 1; $i <= self::MAX; $i++) {
@@ -30,7 +37,7 @@ class MyTest extends BuildTask
         for($limit = $interval + self::MIN; $limit <= self::MAX; $limit += $interval ) {
             $rowCount = ($limit - self::MIN )/ $interval;
             $tableRows[$rowCount] = [];
-            $tableRows[$rowCount][0] = $limit;
+            $tableRows[$rowCount][0] = round(($limit/self::MAX)*100, 1).'%';
             $idListSelected = array_rand($idListAll, $limit);
             shuffle($idListSelected);
             if($rowCount % 2) {
@@ -40,39 +47,10 @@ class MyTest extends BuildTask
                 $outcomeB = $this->testB($idListSelected);
                 $tableRows[$rowCount][1] = $this->testA($idListSelected);
                 $tableRows[$rowCount][2] = $outcomeB;
-                $tableRows[$rowCount];
             }
         }
 
         return $this->output($tableRows);
-    }
-
-    protected function output($tableRows)
-    {
-        echo '
-           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-           <script type="text/javascript">
-             google.charts.load(\'current\', {\'packages\':[\'corechart\']});
-             google.charts.setOnLoadCallback(drawChart);
-
-             function drawChart() {
-               var data = google.visualization.arrayToDataTable(
-                 '.json_encode($tableRows, JSON_PRETTY_PRINT).'
-               );
-
-               var options = {
-                 title: \'Compare ID list lookups\',
-                 curveType: \'function\',
-                 legend: { position: \'bottom\' }
-               };
-
-               var chart = new google.visualization.LineChart(document.getElementById(\'curve_chart\'));
-
-               chart.draw(data, options);
-             }
-           </script>
-           <div id="curve_chart" style="width: 90vw; height: 90vh; margin-left: auto; margin-right: auto; margin-top: 5vh"></div>
-        ';
     }
 
     protected function testA($idListSelected)
@@ -108,6 +86,25 @@ class MyTest extends BuildTask
         // echo $myDataList->sql();
 
         return  round($endB - $startB, 9);
+    }
+
+    protected function xAxisTitle() : string
+    {
+        return 'percentage of random IDs in select statement';
+    }
+
+    protected function yAxisTitle() : string {
+        return 'seconds per request';
+    }
+
+    protected function testATitle() : string
+    {
+        return 'Simple select statement';
+    }
+
+    protected function testBTitle() : string
+    {
+        return 'Computed selected statement';
     }
 
 }

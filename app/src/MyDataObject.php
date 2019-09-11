@@ -1,5 +1,6 @@
 <?php
 
+namespace Sunnysideup\ABSpeedTesting;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 
